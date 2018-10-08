@@ -1,18 +1,24 @@
-angular.module('todoApp', [])
-.controller('dataHugo', ['$scope', '$http', function($scope, $http) {
+angular.module('todoApp', []).controller('dataStats', ['$scope', '$http', function($scope, $http) {
 
-    // $scope  = variable global de ton js/html qui sert a faire du traitement front
+    $scope.incidents = [];
+    $scope.incidents.nouveauIncidentDuJour = [];
 
-    // Je recupère la data de ma route
-    //response.status
   $scope.getStatusFromApi = () => {
 
-    $http.get("MonURL").then(function(response) {
-        $scope.content = response.data;
+    $http.get("http://localhost:57850/syncStats").then(function(response) {
+        $scope.incidents = response.data;
+        console.log('TCL: $scope.getStatusFromApi -> $scope.incidents', $scope.incidents);
+
         $scope.statuscode = response.status;
         $scope.statustext = response.statusText;
-        console.log($scope.content);
+        console.log("Le code de status est " + $scope.statuscode);
     });
   };
+
   $scope.getStatusFromApi();
+
+  setInterval(() => {
+  $scope.getStatusFromApi();
+  console.log("Je marche");
+  }, 120000)
 }]);
